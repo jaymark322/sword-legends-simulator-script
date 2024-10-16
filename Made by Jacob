@@ -1,0 +1,35 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Scythe Simulator Made by Jacob", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+Tab:AddToggle({
+	Name = "Auto Rebirth",
+	Default = false,
+	Callback = function(Value)
+		getgenv().Rebirth = Value
+		
+		if getgenv().Rebirth then
+			print("Auto Rebirth enabled.")
+		else
+			print("Auto Rebirth disabled.")
+		end
+
+		while getgenv().Rebirth do
+			local success, err = pcall(function()
+				game:GetService("ReplicatedStorage").Rebirth.Rebirth:FireServer()
+				print("Auto Rebirth successful.")
+			end)
+
+			if not success then
+				print("Error during Auto Rebirth: " .. err)
+			end
+
+			wait(0.8) -- Adjust the delay if needed
+		end
+	end    
+})
