@@ -1,0 +1,79 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = "Sword Legends Simulator Made by Sllx", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+
+local player = game.Players.LocalPlayer
+
+-- Main Tab
+local Tab = Window:MakeTab({
+	Name = "Main",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+-- Auto Rebirth Toggle
+Tab:AddToggle({
+	Name = "Auto Rebirth (Not currently working)",
+	Default = false,
+	Callback = function(Value)
+		getgenv().Rebirth = Value
+		
+		if getgenv().Rebirth then
+			while getgenv().Rebirth do
+				local success, err = pcall(function()
+					game:GetService("ReplicatedStorage").Rebirth.Rebirth:FireServer()
+				end)
+
+				wait(0.8) -- Adjust the delay if needed
+			end
+		end
+	end    
+})
+
+-- Auto Equip Toggle
+Tab:AddToggle({
+	Name = "Auto Equip Sword",
+	Default = false,
+	Callback = function(Value)
+		getgenv().autoEquip = Value
+		
+		if getgenv().autoEquip then
+			while getgenv().autoEquip do
+				wait(0.1) -- Adding a slight delay to allow the Backpack to update
+				local sword = player.Backpack:FindFirstChild("sword")
+				if sword then
+					if player.Character and player.Character:FindFirstChildOfClass("Humanoid") then
+						player.Character.Humanoid:EquipTool(sword)
+					end
+				end
+				wait(0.1)
+			end
+		end
+	end    
+})
+
+-- AutoFarm Toggle
+Tab:AddToggle({
+	Name = "AutoFarm",
+	Default = false,
+	Callback = function(Value)
+		getgenv().autoSwing = Value
+
+		if getgenv().autoSwing then
+			while getgenv().autoSwing do
+				if player.Character and player.Character:FindFirstChild("sword") and player.Character.sword:FindFirstChild("Handle") then
+					-- Loop the firing of the RemoteEvent 4 times
+					while true do
+						game:GetService("Players").LocalPlayer.Character.sword.Handle.Script.RemoteEvent:FireServer()
+						game:GetService("Players").LocalPlayer.Character.sword.Handle.Script.RemoteEvent:FireServer()
+						game:GetService("Players").LocalPlayer.Character.sword.Handle.Script.RemoteEvent:FireServer()
+						game:GetService("Players").LocalPlayer.Character.sword.Handle.Script.RemoteEvent:FireServer()
+						wait(0.0000000000000001)
+					end
+				end
+				wait(0.1) -- Small wait to avoid flooding
+			end
+		end
+	end
+})
+
+OrionLib:Init()
